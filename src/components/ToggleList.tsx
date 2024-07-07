@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 
-// Define the menu items
+
 type MenuItem = {
   department: string;
   sub_departments?: Array<string>;
@@ -24,10 +24,10 @@ interface ItemProps {
 }
 
 const Item: React.FC<ItemProps> = ({ item, handleSelectItem, selectedItems }) => {
-  const [showItem, setShowItem] = useState(false); // State to show or hide items
+  const [showItem, setShowItem] = useState(false); 
 
   const handleToggle = (): void => {
-    setShowItem((prev) => !prev); // Toggle the display of sub-items
+    setShowItem((prev) => !prev); 
   };
 
   const isParentSelected = selectedItems.has(item.department);
