@@ -13,7 +13,7 @@ function Item({ item, handleSelectItem, selectedItems }: { item: MenuItem, handl
     const [showItem, setShowItem] = useState(false);
 
     const handleToggle = (): void => {
-        setShowItem(!showItem);
+        setShowItem(prev => !prev);
     };
 
     const isParentSelected = selectedItems.has(item.department);
@@ -103,9 +103,7 @@ function ToggleList(): React.ReactElement {
             <h2>Departments</h2>
             <List>
                 {menuConfig.map((item, i) => (
-                    <div key={i}>
-                        <Item item={item} handleSelectItem={handleSelectItem} selectedItems={selectedItems} />
-                    </div>
+                    <Item key={i} item={item} handleSelectItem={handleSelectItem} selectedItems={selectedItems} />
                 ))}
             </List>
         </>
