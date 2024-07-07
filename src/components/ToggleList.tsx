@@ -9,7 +9,7 @@ type MenuItem = {
 
 type MenuConfig = Array<MenuItem>;
 
-function Item({ item, handleSelectItem, selectedItems }: { item: MenuItem, handleSelectItem: (title: string, isSubItem?: boolean) => void, selectedItems: Set<string> }): React.ReactElement {
+function Item({ item, handleSelectItem, selectedItems }: { item: MenuItem, handleSelectItem: (title: string, isSubItem: boolean, isSelected: boolean) => void, selectedItems: Set<string> }): React.ReactElement {
     const [showItem, setShowItem] = useState(false);
 
     const handleToggle = (): void => {
@@ -17,14 +17,15 @@ function Item({ item, handleSelectItem, selectedItems }: { item: MenuItem, handl
     };
 
     const isParentSelected = selectedItems.has(item.department);
+    const areAllSubItemsSelected = item.sub_departments ? item.sub_departments.every(subItem => selectedItems.has(subItem)) : false;
 
     const handleParentCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const isSelected = event.target.checked;
-    handleSelectItem(item.department, false, isSelected);
-    if (item.sub_departments) {
-        item.sub_departments.forEach(subItem => handleSelectItem(subItem, true, isSelected));
-    }
-};
+        const isSelected = event.target.checked;
+        handleSelectItem(item.department, false, isSelected);
+        if (item.sub_departments) {
+            item.sub_departments.forEach(subItem => handleSelectItem(subItem, true, isSelected));
+        }
+    };
 
     const handleSubItemCheckboxChange = (subItem: string, isSelected: boolean) => {
         handleSelectItem(subItem, true, isSelected);
@@ -40,7 +41,11 @@ function Item({ item, handleSelectItem, selectedItems }: { item: MenuItem, handl
         <>
             <ListItem>
                 <FormControlLabel
-                    control={<Checkbox checked={isParentSelected} onChange={handleParentCheckboxChange} />}
+                    control={<Checkbox 
+                        checked={isParentSelected}
+                        indeterminate={!isParentSelected && areAllSubItemsSelected}
+                        onChange={handleParentCheckboxChange} 
+                    />}
                     label={item.department}
                 />
                 {item.sub_departments && (
@@ -75,8 +80,14 @@ function ToggleList(): React.ReactElement {
                 newSelectedItems.add(title);
             } else {
                 newSelectedItems.delete(title);
+                if (!isSubItem) {
+                    menuConfig.forEach(item => {
+                        if (item.department === title && item.sub_departments) {
+                            item.sub_departments.forEach(subItem => newSelectedItems.delete(subItem));
+                        }
+                    });
+                }
             }
-
             return newSelectedItems;
         });
     };
@@ -101,14 +112,14 @@ function ToggleList(): React.ReactElement {
 
     return (
         <>
-        <h2>Departments</h2>
-        <List>
-            {menuConfig.map((item, i) => (
-                <div key={i}>
-                    <Item item={item} handleSelectItem={handleSelectItem} selectedItems={selectedItems} />
-                </div>
-            ))}
-        </List>
+            <h2>Departments</h2>
+            <List>
+                {menuConfig.map((item, i) => (
+                    <div key={i}>
+                        <Item item={item} handleSelectItem={handleSelectItem} selectedItems={selectedItems} />
+                    </div>
+                ))}
+            </List>
         </>
     );
 }
