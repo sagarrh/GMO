@@ -1,4 +1,7 @@
 module.exports = {
+  rules: {
+    '@typescript-eslint/no-unused-vars': 'off'
+  },
   root: true,
   env: { browser: true, es2020: true },
   extends: [

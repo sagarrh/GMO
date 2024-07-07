@@ -17,7 +17,6 @@ function Item({ item, handleSelectItem, selectedItems }: { item: MenuItem, handl
     };
 
     const isParentSelected = selectedItems.has(item.department);
-    const areAllSubItemsSelected = item.sub_departments ? item.sub_departments.every(subItem => selectedItems.has(subItem)) : false;
 
     const handleParentCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const isSelected = event.target.checked;
@@ -41,11 +40,7 @@ function Item({ item, handleSelectItem, selectedItems }: { item: MenuItem, handl
         <>
             <ListItem>
                 <FormControlLabel
-                    control={<Checkbox 
-                        checked={isParentSelected}
-                        indeterminate={!isParentSelected && areAllSubItemsSelected}
-                        onChange={handleParentCheckboxChange} 
-                    />}
+                    control={<Checkbox checked={isParentSelected} onChange={handleParentCheckboxChange} />}
                     label={item.department}
                 />
                 {item.sub_departments && (
@@ -80,13 +75,6 @@ function ToggleList(): React.ReactElement {
                 newSelectedItems.add(title);
             } else {
                 newSelectedItems.delete(title);
-                if (!isSubItem) {
-                    menuConfig.forEach(item => {
-                        if (item.department === title && item.sub_departments) {
-                            item.sub_departments.forEach(subItem => newSelectedItems.delete(subItem));
-                        }
-                    });
-                }
             }
             return newSelectedItems;
         });
