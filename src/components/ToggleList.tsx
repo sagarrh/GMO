@@ -68,7 +68,7 @@ function Item({ item, handleSelectItem, selectedItems }: { item: MenuItem, handl
 function ToggleList(): React.ReactElement {
     const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
 
-    const handleSelectItem = (title: string, isSelected: boolean) => {
+    const handleSelectItem = (title: string, isSubItem: boolean, isSelected: boolean) => {
         setSelectedItems(prevSelectedItems => {
             const newSelectedItems = new Set(prevSelectedItems);
             if (isSelected) {
